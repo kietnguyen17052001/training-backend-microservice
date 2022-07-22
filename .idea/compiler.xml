@@ -13,5 +13,8 @@
         <module name="customer-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="register-service" target="18" />
+    </bytecodeTargetLevel>
   </component>
 </project>
