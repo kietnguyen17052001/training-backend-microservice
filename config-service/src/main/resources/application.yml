@@ -9,7 +9,6 @@ spring:
       server:
         jdbc:
           sql: SELECT my_key, my_value FROM my_properties WHERE application=? and profile=? and label=?
-          order: 1
   datasource:
     url: jdbc:mysql://localhost:3306/configuration
     username: root

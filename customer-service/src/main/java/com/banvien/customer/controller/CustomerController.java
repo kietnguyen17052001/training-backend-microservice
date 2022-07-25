@@ -2,8 +2,6 @@ package com.banvien.customer.controller;
 
 import com.banvien.customer.entity.Customer;
 import com.banvien.customer.service.CustomerService;
-import com.banvien.customer.entity.Customer;
-import com.banvien.customer.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/customers")
-@CrossOrigin(origins = "http://localhost:8081")
 @AllArgsConstructor
 public class CustomerController {
     private final CustomerService service;
