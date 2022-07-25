@@ -2,10 +2,25 @@ server:
   port: 8888
 
 spring:
+  application:
+    name: config-service
   cloud:
     config:
       server:
-        git:
-          uri: https://github.com/kietnguyen17052001/training-backend-microservice-configurations.git
-          search-paths: configurations
-          default-label: master
+        jdbc:
+          sql: SELECT my_key, my_value FROM my_properties WHERE application=? and profile=? and label=?
+          order: 1
+  datasource:
+    url: jdbc:mysql://localhost:3306/configuration
+    username: root
+    password: 5071
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  profiles:
+    active: jdbc
