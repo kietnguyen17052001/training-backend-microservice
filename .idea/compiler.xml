@@ -10,11 +10,13 @@
         <module name="api-gateway" />
         <module name="product-service" />
         <module name="config-service" />
+        <module name="account-service" />
         <module name="customer-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="register-service" target="18" />
+      <module name="security-service" target="18" />
     </bytecodeTargetLevel>
   </component>
 </project>
