@@ -1,10 +1,12 @@
 package com.banvien.account.controller;
 
+import com.banvien.account.dto.AccountDto;
 import com.banvien.account.entity.Account;
 import com.banvien.account.entity.Role;
 import com.banvien.account.service.AccountService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class AccountController {
     private final AccountService service;
+    private final ModelMapper mapper;
 
     @Data
     static class FormAddRole {
@@ -22,8 +25,9 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/register")
-    public ResponseEntity<Account> register(@RequestBody Account account) {
-        return new ResponseEntity<>(service.register(account), HttpStatus.CREATED);
+    public ResponseEntity<AccountDto> register(@RequestBody Account account) {
+        AccountDto dto = mapper.map(service.register(account), AccountDto.class);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     @PutMapping("/accounts/addRole")

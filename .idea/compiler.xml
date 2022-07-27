@@ -7,14 +7,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="auth-service" />
+        <module name="config-service" />
+        <module name="customer-service" />
         <module name="api-gateway" />
         <module name="product-service" />
-        <module name="config-service" />
+        <module name="order-service" />
         <module name="account-service" />
-        <module name="customer-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="html" target="18" />
       <module name="register-service" target="18" />
       <module name="security-service" target="18" />
     </bytecodeTargetLevel>
