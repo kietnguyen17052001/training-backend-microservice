@@ -15,4 +15,6 @@ public interface AccountService {
     List<Account> getAccount(String search);
 
     Account getAccounts(Long id);
+
+    Account getAccountByUsername(String username);
 }

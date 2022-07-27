@@ -70,4 +70,9 @@ public class AccountServiceImpl implements AccountService {
             throw new NotFoundException("Not found id " + id);
         });
     }
+
+    @Override
+    public Account getAccountByUsername(String username) {
+        return accountRepo.findByUsername(username);
+    }
 }

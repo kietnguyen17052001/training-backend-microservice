@@ -36,9 +36,14 @@ public class AccountController {
 
 
     @GetMapping("/accounts/{id}")
-    public ResponseEntity<AccountDto> getAccount(@PathVariable("id") Long id) {
+    public ResponseEntity<AccountDto> getAccountById(@PathVariable("id") Long id) {
         AccountDto dto = mapper.map(service.getAccounts(id), AccountDto.class);
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/accounts/username/{username}")
+    public ResponseEntity<Account> getAccountByUsername(@PathVariable("username") String username) {
+        return new ResponseEntity<>(service.getAccountByUsername(username), HttpStatus.OK);
     }
 
     @PostMapping("/accounts/register")
