@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1")
@@ -23,6 +26,14 @@ public class AccountController {
         private String username;
         private String nameRole;
     }
+
+    @GetMapping("/accounts")
+    public ResponseEntity<List<AccountDto>> getAccount(@RequestParam(name = "search", required = false) String search) {
+        List<Account> accounts = service.getAccount(search);
+        List<AccountDto> accountDtos = accounts.stream().map(account -> mapper.map(account, AccountDto.class)).collect(Collectors.toList());
+        return new ResponseEntity<>(accountDtos, HttpStatus.OK);
+    }
+
 
     @GetMapping("/accounts/{id}")
     public ResponseEntity<AccountDto> getAccount(@PathVariable("id") Long id) {

@@ -11,6 +11,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -46,6 +49,19 @@ public class AccountServiceImpl implements AccountService {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+    }
+
+    @Override
+    public List<Account> getAccount(String search) {
+        List<Account> accounts = accountRepo.findAll();
+        if (search != null) {
+            accounts = accounts.stream().filter(account -> account.getUsername().contains(search)
+                    || account.getDisplayName().contains(search)).collect(Collectors.toList());
+            if (accounts.isEmpty()) {
+                throw new NotFoundException("Not found search " + search);
+            }
+        }
+        return accounts;
     }
 
     @Override
