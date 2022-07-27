@@ -29,14 +29,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addRoleToAccount(String username, String nameRole) {
+    public Account addRoleToAccount(String username, String nameRole) {
         Account account = accountRepo.findByUsername(username);
         Role role = roleRepo.findByName(nameRole);
-        if (account == null || role == null){
+        if (account == null || role == null) {
             throw new NotFoundException("Not found " + username + " or " + nameRole);
         }
         account.getRoles().add(role);
-        accountRepo.save(account);
+        return accountRepo.save(account);
     }
 
     @Override
@@ -46,5 +46,12 @@ public class AccountServiceImpl implements AccountService {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+    }
+
+    @Override
+    public Account getAccounts(Long id) {
+        return accountRepo.findById(id).orElseThrow(() -> {
+            throw new NotFoundException("Not found id " + id);
+        });
     }
 }

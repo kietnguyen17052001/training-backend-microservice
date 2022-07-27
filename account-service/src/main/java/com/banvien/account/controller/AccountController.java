@@ -24,6 +24,12 @@ public class AccountController {
         private String nameRole;
     }
 
+    @GetMapping("/accounts/{id}")
+    public ResponseEntity<AccountDto> getAccount(@PathVariable("id") Long id) {
+        AccountDto dto = mapper.map(service.getAccounts(id), AccountDto.class);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
     @PostMapping("/accounts/register")
     public ResponseEntity<AccountDto> register(@RequestBody Account account) {
         AccountDto dto = mapper.map(service.register(account), AccountDto.class);
@@ -31,9 +37,9 @@ public class AccountController {
     }
 
     @PutMapping("/accounts/addRole")
-    public ResponseEntity<?> addRole(@RequestBody FormAddRole form) {
-        service.addRoleToAccount(form.getUsername(), form.getNameRole());
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<AccountDto> addRole(@RequestBody FormAddRole form) {
+        AccountDto dto = mapper.map(service.addRoleToAccount(form.getUsername(), form.getNameRole()), AccountDto.class);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @PostMapping("/roles")
