@@ -2,7 +2,9 @@ package com.banvien.apigateway.security;
 
 import com.banvien.apigateway.filter.CustomAuthorizationFilter;
 import com.banvien.apigateway.jwt.JwtConfig;
+import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterAfter(new CustomAuthorizationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
+                .authorizeRequests().antMatchers(jwtConfig.getUri()).permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/customers/**", "/api/v1/products/**", "/api/v1/orders/**")
                 .hasAnyAuthority("admin_role", "user_role")
                 .antMatchers("/api/v1/customers/**", "/api/v1/products/**", "/api/v1/orders/**").hasRole("admin_role")
@@ -36,3 +38,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtConfig();
     }
 }
+

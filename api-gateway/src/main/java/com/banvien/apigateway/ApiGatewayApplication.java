@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 public class ApiGatewayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ApiGatewayApplication.class);
+        SpringApplication.run(ApiGatewayApplication.class, args);
     }
 
 }

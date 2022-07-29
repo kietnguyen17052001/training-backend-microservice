@@ -33,13 +33,17 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) {
             throw new NotFoundException("Not found id " + id);
         } else {
-            Product product = restTemplate.getForObject(URL_GET_PRODUCT + order.getProductId(), Product.class);
-            Customer customer = restTemplate.getForObject(URL_GET_CUSTOMER + order.getCustomerId(), Customer.class);
-            ResponseTemplateVo templateVo = new ResponseTemplateVo();
-            templateVo.setOrder(order);
-            templateVo.setCustomer(customer);
-            templateVo.setProduct(product);
-            return templateVo;
+            try {
+                Product product = restTemplate.getForObject(URL_GET_PRODUCT + order.getProductId(), Product.class);
+                Customer customer = restTemplate.getForObject(URL_GET_CUSTOMER + order.getCustomerId(), Customer.class);
+                ResponseTemplateVo templateVo = new ResponseTemplateVo();
+                templateVo.setOrder(order);
+                templateVo.setCustomer(customer);
+                templateVo.setProduct(product);
+                return templateVo;
+            } catch (Exception e) {
+                throw new NotFoundException("Not found product id or customer id");
+            }
         }
     }
 

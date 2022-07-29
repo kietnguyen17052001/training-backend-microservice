@@ -1,6 +1,6 @@
 spring:
   main:
-    allow-bean-definition-overriding: true
     allow-circular-references: true
+    allow-bean-definition-overriding: true
   application:
-    name: api-gateway
+    name: auth-service
