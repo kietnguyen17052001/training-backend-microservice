@@ -8,6 +8,10 @@ import com.banvien.order.vo.Customer;
 import com.banvien.order.vo.Product;
 import com.banvien.order.vo.ResponseTemplateVo;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,14 +23,16 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository repo;
     private final RestTemplate restTemplate;
-    private static final String URL_GET_CUSTOMER = "http://localhost:6969/api/v1/customers/";
-    private static final String URL_GET_PRODUCT = "http://localhost:6969/api/v1/products/";
+    private static final String URL_GET_CUSTOMER = "http://localhost:8081/api/v1/customers/";
+    private static final String URL_GET_PRODUCT = "http://localhost:8082/api/v1/products/";
 
+    @Cacheable(value = "orders")
     @Override
     public List<Order> getOrders() {
         return repo.findAll();
     }
 
+    @Cacheable(value = "order", key = "#id")
     @Override
     public ResponseTemplateVo getOrder(Long id) {
         Order order = repo.findOneById(id);
@@ -47,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @CacheEvict(value = "orders", allEntries = true)
     @Override
     public Order create(Order order) {
         try {
@@ -58,12 +65,14 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value = "order", key = "#order.id"), @CacheEvict(value = "orders", allEntries = true)})
     @Override
     public Order update(Order order) {
         order.setTime(LocalDateTime.now());
         return repo.save(order);
     }
 
+    @Caching(evict = {@CacheEvict(value = "order", key = "#id"), @CacheEvict(value = "orders", allEntries = true)})
     @Override
     public void delete(Long id) {
         Order order = repo.findOneById(id);

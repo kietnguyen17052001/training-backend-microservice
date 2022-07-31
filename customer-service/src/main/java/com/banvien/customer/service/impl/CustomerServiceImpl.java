@@ -6,6 +6,10 @@ import com.banvien.customer.exception.NotFoundException;
 import com.banvien.customer.repository.CustomerRepo;
 import com.banvien.customer.service.CustomerService;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepo repo;
 
+    @Cacheable(value = "customers")
     @Override
     public List<Customer> getAll(String search) {
         if (search == null) {
@@ -32,11 +37,13 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Cacheable(value = "customer", key = "#id", unless = "#result == null")
     @Override
     public Customer getById(Long id) {
         return repo.findById(id).orElseThrow(() -> new NotFoundException("Not found " + id));
     }
 
+    @CacheEvict(value = "customers", allEntries = true)
     @Override
     public Customer create(Customer customer) {
         try {
@@ -46,6 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value = "customer", key = "#customer.id"), @CacheEvict(value = "customers", allEntries = true)})
     @Override
     public Customer update(Customer customer) {
         try {
@@ -55,6 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    @Caching(evict = {@CacheEvict(value = "customer", key = "#id"), @CacheEvict(value = "customers", allEntries = true)})
     @Override
     public void delete(Long id) {
         if (getById(id) != null) {
