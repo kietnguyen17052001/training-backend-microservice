@@ -21,7 +21,7 @@ import java.util.Collection;
 public class UserDetailServiceImpl implements UserDetailsService {
     private final RestTemplate restTemplate;
     private final UserRepository repo;
-    private final static String URL_GET_ACCOUNT_BY_USERNAME = "http://localhost:6969/api/v1/accounts/username/";
+    private final static String URL_GET_ACCOUNT_BY_USERNAME = "http://localhost:8083/api/v1/accounts/username/";
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -10,9 +10,9 @@ spring:
         jdbc:
           sql: SELECT my_key, my_value FROM my_properties WHERE application=? and profile=? and label=?
   datasource:
-    url: jdbc:mysql://localhost:3306/configuration
-    username: root
-    password: 5071
+    url: jdbc:mysql://us-cdbr-east-06.cleardb.net:3306/heroku_74ab49c9900fb12
+    username: bff903c40e035b
+    password: 51f4fe10
   jpa:
     properties:
       hibernate:

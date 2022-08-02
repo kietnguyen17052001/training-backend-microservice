@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.WebFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-public class CustomAuthorizationFilter extends OncePerRequestFilter{
+public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private final JwtConfig jwtConfig;
 
     public CustomAuthorizationFilter(JwtConfig jwtConfig) {
@@ -36,7 +36,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, javax.servlet.FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader(jwtConfig.getHeader());
+        String authorizationHeader = request.getHeader(jwtConfig.getPrefix());
         if (authorizationHeader != null && authorizationHeader.startsWith(jwtConfig.getPrefix())) {
             try {
                 String token = authorizationHeader.substring(jwtConfig.getPrefix().length());

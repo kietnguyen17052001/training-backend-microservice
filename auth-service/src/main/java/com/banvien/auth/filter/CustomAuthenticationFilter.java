@@ -34,6 +34,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri(), "POST"));
     }
 
     @Override
@@ -66,6 +67,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);
+        response.setHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + access_token);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 }

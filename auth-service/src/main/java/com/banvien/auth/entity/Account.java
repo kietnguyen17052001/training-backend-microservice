@@ -19,6 +19,9 @@ public class Account {
     private String username;
     @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auth_provider")
+    private AuthenticationProvider authenticationProvider;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles = new ArrayList<>();
 }
