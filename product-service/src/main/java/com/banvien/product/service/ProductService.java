@@ -5,7 +5,7 @@ import com.banvien.product.entity.Product;
 import java.util.List;
 
 public interface ProductService {
-    List<Product> getAll(String search);
+    List<Product> getAll(String search, int page, int size, String sortBy);
 
     Product getById(Long id);
 

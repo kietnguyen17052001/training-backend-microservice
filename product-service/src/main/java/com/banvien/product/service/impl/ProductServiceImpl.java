@@ -6,10 +6,15 @@ import com.banvien.product.exception.NotFoundException;
 import com.banvien.product.repo.ProductRepo;
 import com.banvien.product.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.NotFound;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,19 +27,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Cacheable(value = "products")
     @Override
-    public List<Product> getAll(String search) {
+    public List<Product> getAll(String search, int page, int size, String sortBy) {
+        Pageable pageable = (sortBy == null) ? PageRequest.of(page, size) : PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Product> products;
         if (search == null) {
-            return repo.findAll();
+            products = repo.findAll(pageable);
         } else {
-            List<Product> products = repo.findAll().stream()
-                    .filter(product -> product.getName().contains(search))
-                    .collect(Collectors.toList());
-            if (!products.isEmpty()) {
-                return products;
-            } else {
+            products = repo.findByNameContaining(search, pageable);
+            if (products.isEmpty()) {
                 throw new NotFoundException("Not found " + search);
             }
         }
+        return products.getContent();
     }
 
     @Cacheable(value = "product", key = "#id")

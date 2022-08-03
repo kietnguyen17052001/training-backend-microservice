@@ -17,8 +17,10 @@ public class OrderController {
     private final OrderService service;
 
     @GetMapping
-    public ResponseEntity<List<Order>> getOrders() {
-        return new ResponseEntity<>(service.getOrders(), HttpStatus.OK);
+    public ResponseEntity<List<Order>> getOrders(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                 @RequestParam(name = "size", defaultValue = "3") int size,
+                                                 @RequestParam(name = "sortBy", required = false) String sortBy) {
+        return new ResponseEntity<>(service.getOrders((page > 0) ? page - 1 : page, size, sortBy), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -6,7 +6,7 @@ import com.banvien.order.vo.ResponseTemplateVo;
 import java.util.List;
 
 public interface OrderService {
-    List<Order> getOrders();
+    List<Order> getOrders(int page, int size, String sortBy);
 
     ResponseTemplateVo getOrder(Long id);
 

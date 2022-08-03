@@ -5,7 +5,7 @@ import com.banvien.customer.entity.Customer;
 import java.util.List;
 
 public interface CustomerService {
-    List<Customer> getAll(String search);
+    List<Customer> getAll(String search, int page, int size, String sortBy);
 
     Customer getById(Long id);
 

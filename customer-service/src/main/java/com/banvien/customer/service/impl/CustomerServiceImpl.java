@@ -7,13 +7,15 @@ import com.banvien.customer.repository.CustomerRepo;
 import com.banvien.customer.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,19 +24,18 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Cacheable(value = "customers")
     @Override
-    public List<Customer> getAll(String search) {
+    public List<Customer> getAll(String search, int page, int size, String sortBy) {
+        Pageable pageable = (sortBy == null) ? PageRequest.of(page, size) : PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        Page<Customer> customers;
         if (search == null) {
-            return repo.findAll();
+            customers = repo.findAll(pageable);
         } else {
-            List<Customer> products = repo.findAll().stream()
-                    .filter(product -> product.getName().contains(search))
-                    .collect(Collectors.toList());
-            if (!products.isEmpty()) {
-                return products;
-            } else {
+            customers = repo.findByNameContaining(search, pageable);
+            if (customers.isEmpty()) {
                 throw new NotFoundException("Not found " + search);
             }
         }
+        return customers.getContent();
     }
 
     @Cacheable(value = "customer", key = "#id", unless = "#result == null")

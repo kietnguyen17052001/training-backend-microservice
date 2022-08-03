@@ -8,6 +8,13 @@ import com.banvien.account.repository.AccountRepo;
 import com.banvien.account.repository.RoleRepo;
 import com.banvien.account.service.AccountService;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,20 +59,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getAccount(String search) {
-        List<Account> accounts = accountRepo.findAll();
-        if (search != null) {
-            accounts = accounts.stream().filter(account -> account.getUsername().contains(search)
-                    || account.getDisplayName().contains(search)).collect(Collectors.toList());
+    public List<Account> getAccounts(String search, int page, int size, String sortBy) {
+        Pageable pageable = (sortBy == null) ? PageRequest.of(page, size) : PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Account> accounts;
+        if (search == null) {
+            accounts = accountRepo.findAll(pageable);
+        } else {
+            accounts = accountRepo.findByUsernameContaining(search, pageable);
             if (accounts.isEmpty()) {
-                throw new NotFoundException("Not found search " + search);
+                throw new NotFoundException("Not found " + search);
             }
         }
-        return accounts;
+        return accounts.getContent();
     }
 
     @Override
-    public Account getAccounts(Long id) {
+    public Account getAccount(Long id) {
         return accountRepo.findById(id).orElseThrow(() -> {
             throw new NotFoundException("Not found id " + id);
         });
@@ -75,4 +84,13 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountByUsername(String username) {
         return accountRepo.findByUsername(username);
     }
+
+    @Override
+    public void deleteAccountById(Long id) {
+        if (getAccount(id) == null) {
+            throw new NotFoundException("Not found " + id);
+        }
+        accountRepo.deleteById(id);
+    }
+
 }

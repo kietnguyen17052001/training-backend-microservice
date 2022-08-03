@@ -11,6 +11,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,8 +31,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Cacheable(value = "orders")
     @Override
-    public List<Order> getOrders() {
-        return repo.findAll();
+    public List<Order> getOrders(int page, int size, String sortBy) {
+        Pageable pageable = (sortBy == null) ? PageRequest.of(page, size) : PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Order> orders = repo.findAll(pageable);
+        return orders.getContent();
     }
 
     @Cacheable(value = "order", key = "#id")

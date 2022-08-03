@@ -17,8 +17,11 @@ public class CustomerController {
     private final CustomerService service;
 
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllOrSearch(@RequestParam(name = "search", required = false) String search) {
-        return new ResponseEntity<>(service.getAll(search), HttpStatus.OK);
+    public ResponseEntity<List<Customer>> getAllOrSearch(@RequestParam(name = "search", required = false) String search,
+                                                         @RequestParam(name = "page", defaultValue = "0") int page,
+                                                         @RequestParam(name = "size", defaultValue = "3") int size,
+                                                         @RequestParam(name = "sortBy", required = false) String sortBy) {
+        return new ResponseEntity<>(service.getAll(search, (page > 0) ? page - 1 : page, size, sortBy), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
