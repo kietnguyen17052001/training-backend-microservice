@@ -2,6 +2,7 @@ package com.banvien.apigateway.security;
 
 import com.banvien.apigateway.filter.CustomAuthorizationFilter;
 import com.banvien.apigateway.jwt.JwtConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
 @Configuration
+@Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtConfig jwtConfig;
@@ -28,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .and()
-                .authorizeRequests().antMatchers(jwtConfig.getUri()).permitAll()
+                .authorizeRequests().antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/customers/**", "/api/v1/products/**", "/api/v1/orders/**")
                 .hasAnyAuthority("ADMIN_ROLE", "USER_ROLE")
                 .antMatchers("/api/v1/customers/**", "/api/v1/products/**", "/api/v1/orders/**").hasRole("ADMIN_ROLE")

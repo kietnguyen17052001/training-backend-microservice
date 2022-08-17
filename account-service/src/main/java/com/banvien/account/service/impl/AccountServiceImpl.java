@@ -28,6 +28,8 @@ public class AccountServiceImpl implements AccountService {
     private final RoleRepo roleRepo;
     private final PasswordEncoder encoder;
 
+
+    @CacheEvict(value = "accounts", allEntries = true)
     @Override
     public Account register(Account account) {
         try {
@@ -58,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Cacheable(value = "accounts")
     @Override
     public List<Account> getAccounts(String search, int page, int size, String sortBy) {
         Pageable pageable = (sortBy == null) ? PageRequest.of(page, size) : PageRequest.of(page, size, Sort.by(sortBy));
